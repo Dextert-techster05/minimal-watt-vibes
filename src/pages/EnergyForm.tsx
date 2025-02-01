@@ -5,20 +5,66 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Plus, Trash2 } from "lucide-react";
+
+interface Appliance {
+  id: string;
+  name: string;
+  power: string;
+  usage: string;
+}
 
 const EnergyForm = () => {
   const { toast } = useToast();
   const [currentSection, setCurrentSection] = useState(0);
   const [formData, setFormData] = useState({
+    // Section 1: General Information
     userType: "household",
     location: "",
     buildingSize: "",
     occupants: "",
-    monthlyUsage: "",
-    peakHours: "",
-    applianceCount: "",
-    householdSize: "",
+    
+    // Section 2: Energy Sources
+    energySources: [] as string[],
+    energyProvider: "",
+    
+    // Section 3: Appliances
+    appliances: [] as Appliance[],
+    
+    // Section 4: Usage Patterns
+    peakUsageTime: "",
+    highConsumptionSeason: "",
+    
+    // Section 5: Summary
+    monthlyBill: "",
   });
+
+  const addAppliance = () => {
+    setFormData({
+      ...formData,
+      appliances: [
+        ...formData.appliances,
+        { id: Date.now().toString(), name: "", power: "", usage: "" },
+      ],
+    });
+  };
+
+  const removeAppliance = (id: string) => {
+    setFormData({
+      ...formData,
+      appliances: formData.appliances.filter((app) => app.id !== id),
+    });
+  };
+
+  const updateAppliance = (id: string, field: keyof Appliance, value: string) => {
+    setFormData({
+      ...formData,
+      appliances: formData.appliances.map((app) =>
+        app.id === id ? { ...app, [field]: value } : app
+      ),
+    });
+  };
 
   const sections = [
     {
@@ -91,39 +137,171 @@ const EnergyForm = () => {
       ),
     },
     {
-      title: "Energy Usage",
+      title: "Energy Sources",
       fields: (
         <div className="space-y-6">
-          <div>
-            <Label>Monthly Energy Usage (kWh)</Label>
-            <Input
-              type="number"
-              value={formData.monthlyUsage}
-              onChange={(e) =>
-                setFormData({ ...formData, monthlyUsage: e.target.value })
-              }
-              placeholder="e.g., 500"
-              className="mt-1"
-            />
+          <div className="space-y-4">
+            <Label>Energy Sources (Check all that apply)</Label>
+            <div className="space-y-2">
+              {["Electricity", "Gas", "Solar", "Other"].map((source) => (
+                <div key={source} className="flex items-center space-x-2">
+                  <Checkbox
+                    id={source.toLowerCase()}
+                    checked={formData.energySources.includes(source)}
+                    onCheckedChange={(checked) => {
+                      if (checked) {
+                        setFormData({
+                          ...formData,
+                          energySources: [...formData.energySources, source],
+                        });
+                      } else {
+                        setFormData({
+                          ...formData,
+                          energySources: formData.energySources.filter(
+                            (s) => s !== source
+                          ),
+                        });
+                      }
+                    }}
+                  />
+                  <Label htmlFor={source.toLowerCase()}>{source}</Label>
+                </div>
+              ))}
+            </div>
           </div>
+
           <div>
-            <Label>Peak Usage Hours</Label>
+            <Label>Energy Provider</Label>
             <Input
-              type="number"
-              value={formData.peakHours}
+              type="text"
+              value={formData.energyProvider}
               onChange={(e) =>
-                setFormData({ ...formData, peakHours: e.target.value })
+                setFormData({ ...formData, energyProvider: e.target.value })
               }
-              placeholder="e.g., 4"
+              placeholder="Enter your energy provider"
               className="mt-1"
             />
           </div>
         </div>
       ),
     },
-    { title: "Appliances & Equipment", fields: <div>Section 3 content</div> },
-    { title: "Behavior & Habits", fields: <div>Section 4 content</div> },
-    { title: "Goals & Preferences", fields: <div>Section 5 content</div> },
+    {
+      title: "Appliances",
+      fields: (
+        <div className="space-y-6">
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <Label>Appliances and Equipment</Label>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={addAppliance}
+              >
+                <Plus className="mr-2 h-4 w-4" /> Add Appliance
+              </Button>
+            </div>
+            {formData.appliances.map((appliance) => (
+              <div
+                key={appliance.id}
+                className="grid grid-cols-4 gap-4 items-center"
+              >
+                <Input
+                  placeholder="Name"
+                  value={appliance.name}
+                  onChange={(e) =>
+                    updateAppliance(appliance.id, "name", e.target.value)
+                  }
+                />
+                <Input
+                  placeholder="Power (watts)"
+                  value={appliance.power}
+                  onChange={(e) =>
+                    updateAppliance(appliance.id, "power", e.target.value)
+                  }
+                />
+                <Input
+                  placeholder="Usage (hrs/day)"
+                  value={appliance.usage}
+                  onChange={(e) =>
+                    updateAppliance(appliance.id, "usage", e.target.value)
+                  }
+                />
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="icon"
+                  onClick={() => removeAppliance(appliance.id)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "Usage Patterns",
+      fields: (
+        <div className="space-y-6">
+          <div className="space-y-4">
+            <Label>Peak Usage Times</Label>
+            <RadioGroup
+              value={formData.peakUsageTime}
+              onValueChange={(value) =>
+                setFormData({ ...formData, peakUsageTime: value })
+              }
+              className="flex flex-col space-y-2"
+            >
+              {["Morning", "Afternoon", "Evening", "24/7"].map((time) => (
+                <div key={time} className="flex items-center space-x-2">
+                  <RadioGroupItem value={time.toLowerCase()} id={time.toLowerCase()} />
+                  <Label htmlFor={time.toLowerCase()}>{time}</Label>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
+
+          <div className="space-y-4">
+            <Label>High Consumption Season</Label>
+            <RadioGroup
+              value={formData.highConsumptionSeason}
+              onValueChange={(value) =>
+                setFormData({ ...formData, highConsumptionSeason: value })
+              }
+              className="flex flex-col space-y-2"
+            >
+              {["Summer", "Winter", "Spring", "Fall"].map((season) => (
+                <div key={season} className="flex items-center space-x-2">
+                  <RadioGroupItem value={season.toLowerCase()} id={season.toLowerCase()} />
+                  <Label htmlFor={season.toLowerCase()}>{season}</Label>
+                </div>
+              ))}
+            </RadioGroup>
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: "Summary",
+      fields: (
+        <div className="space-y-6">
+          <div>
+            <Label>Average Monthly Energy Bill ($)</Label>
+            <Input
+              type="number"
+              value={formData.monthlyBill}
+              onChange={(e) =>
+                setFormData({ ...formData, monthlyBill: e.target.value })
+              }
+              placeholder="Enter your average monthly bill"
+              className="mt-1"
+            />
+          </div>
+        </div>
+      ),
+    },
   ];
 
   const handleSubmit = (e: React.FormEvent) => {
