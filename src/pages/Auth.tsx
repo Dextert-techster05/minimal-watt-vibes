@@ -22,16 +22,35 @@ const Auth = () => {
     try {
       if (isSignUp) {
         console.log("Attempting to sign up...");
+        // First check if user exists
+        const { data: existingUser } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('email', email)
+          .single();
+
+        if (existingUser) {
+          throw new Error("An account with this email already exists. Please sign in instead.");
+        }
+
         const { data, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
             emailRedirectTo: window.location.origin,
+            data: {
+              email: email,
+            }
           },
         });
         console.log("Sign up response:", { data, error: signUpError });
 
-        if (signUpError) throw signUpError;
+        if (signUpError) {
+          if (signUpError.message.includes("Password should be")) {
+            throw new Error("Password must be at least 6 characters long.");
+          }
+          throw signUpError;
+        }
         
         toast({
           title: "Success!",
@@ -39,6 +58,10 @@ const Auth = () => {
         });
       } else {
         console.log("Attempting to sign in...");
+        // First check if user exists
+        const { data: userExists } = await supabase.auth.getUser(email);
+        console.log("User exists check:", userExists);
+
         const { data, error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -46,9 +69,16 @@ const Auth = () => {
         console.log("Sign in response:", { data, error: signInError });
 
         if (signInError) {
-          // Handle specific error cases
           if (signInError.message === "Invalid login credentials") {
-            throw new Error("Invalid email or password. Please try again.");
+            // Check if user exists but credentials are wrong
+            if (userExists) {
+              throw new Error("Invalid password. Please try again.");
+            } else {
+              throw new Error("No account found with this email. Please sign up first.");
+            }
+          }
+          if (signInError.message.includes("Email not confirmed")) {
+            throw new Error("Please verify your email address before signing in.");
           }
           throw signInError;
         }
