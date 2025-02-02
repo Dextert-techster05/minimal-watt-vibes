@@ -17,29 +17,50 @@ const Auth = () => {
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    console.log("Starting authentication process...", { isSignUp, email });
+
     try {
       if (isSignUp) {
-        const { error: signUpError } = await supabase.auth.signUp({
+        console.log("Attempting to sign up...");
+        const { data, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
+          options: {
+            emailRedirectTo: window.location.origin,
+          },
         });
+        console.log("Sign up response:", { data, error: signUpError });
+
         if (signUpError) throw signUpError;
+        
         toast({
           title: "Success!",
           description: "Please check your email to verify your account.",
         });
       } else {
-        const { error: signInError } = await supabase.auth.signInWithPassword({
+        console.log("Attempting to sign in...");
+        const { data, error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
-        if (signInError) throw signInError;
+        console.log("Sign in response:", { data, error: signInError });
+
+        if (signInError) {
+          // Handle specific error cases
+          if (signInError.message === "Invalid login credentials") {
+            throw new Error("Invalid email or password. Please try again.");
+          }
+          throw signInError;
+        }
+
+        console.log("Sign in successful, navigating to home...");
         navigate("/");
       }
     } catch (error: any) {
+      console.error("Authentication error:", error);
       toast({
         title: "Error",
-        description: error.message,
+        description: error.message || "An error occurred during authentication",
         variant: "destructive",
       });
     } finally {
@@ -75,6 +96,7 @@ const Auth = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                minLength={6}
               />
             </div>
             <Button
