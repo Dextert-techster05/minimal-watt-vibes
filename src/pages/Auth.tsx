@@ -22,7 +22,6 @@ const Auth = () => {
     try {
       if (isSignUp) {
         console.log("Attempting to sign up...");
-        // First check if user exists
         const { data: existingUser } = await supabase
           .from('profiles')
           .select('id')
@@ -37,7 +36,7 @@ const Auth = () => {
           email,
           password,
           options: {
-            emailRedirectTo: window.location.origin,
+            emailRedirectTo: `${window.location.origin}/auth`,
             data: {
               email: email,
             }
@@ -58,8 +57,7 @@ const Auth = () => {
         });
       } else {
         console.log("Attempting to sign in...");
-        // First check if user exists
-        const { data: userExists } = await supabase.auth.getUser(email);
+        const { data: userExists } = await supabase.auth.getUser();
         console.log("User exists check:", userExists);
 
         const { data, error: signInError } = await supabase.auth.signInWithPassword({
@@ -70,12 +68,7 @@ const Auth = () => {
 
         if (signInError) {
           if (signInError.message === "Invalid login credentials") {
-            // Check if user exists but credentials are wrong
-            if (userExists) {
-              throw new Error("Invalid password. Please try again.");
-            } else {
-              throw new Error("No account found with this email. Please sign up first.");
-            }
+            throw new Error("Invalid email or password. Please try again.");
           }
           if (signInError.message.includes("Email not confirmed")) {
             throw new Error("Please verify your email address before signing in.");
