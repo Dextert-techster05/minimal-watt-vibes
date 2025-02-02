@@ -52,6 +52,7 @@ const App = () => {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            {/* Only the energy form requires authentication */}
             <Route
               path="/energy-form"
               element={
