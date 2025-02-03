@@ -1,13 +1,13 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const data = [
-  { name: 'Mon', usage: 4000 },
-  { name: 'Tue', usage: 3000 },
-  { name: 'Wed', usage: 2000 },
-  { name: 'Thu', usage: 2780 },
-  { name: 'Fri', usage: 1890 },
-  { name: 'Sat', usage: 2390 },
-  { name: 'Sun', usage: 3490 },
+  { name: 'January', usage: 650 },
+  { name: 'February', usage: 580 },
+  { name: 'March', usage: 800 },
+  { name: 'April', usage: 810 },
+  { name: 'May', usage: 560 },
+  { name: 'June', usage: 550 },
+  { name: 'July', usage: 400 },
 ];
 
 const EnergyChart = () => {
@@ -24,15 +24,28 @@ const EnergyChart = () => {
           }}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-          <XAxis dataKey="name" stroke="#666" />
-          <YAxis stroke="#666" />
+          <XAxis 
+            dataKey="name" 
+            stroke="#666"
+            tick={{ fill: '#666' }}
+          />
+          <YAxis 
+            stroke="#666"
+            tick={{ fill: '#666' }}
+            label={{ 
+              value: 'Energy Usage (kWh)', 
+              angle: -90, 
+              position: 'insideLeft',
+              style: { fill: '#666' }
+            }}
+          />
           <Tooltip />
           <Line
             type="monotone"
             dataKey="usage"
-            stroke="#7E69AB"
+            stroke="#22C55E"
             strokeWidth={2}
-            dot={{ fill: '#7E69AB' }}
+            dot={{ fill: '#22C55E' }}
           />
         </LineChart>
       </ResponsiveContainer>

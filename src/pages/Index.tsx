@@ -2,7 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import Testimonial from "@/components/Testimonial";
-import { ArrowRight, Leaf, TreePine, Sprout } from "lucide-react";
+import { ArrowRight, Leaf } from "lucide-react";
+import EnergyChart from "@/components/EnergyChart";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -42,46 +43,71 @@ const Index = () => {
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center">
         {/* Background with gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#E8F5E9] via-white to-[#F2FCE2] opacity-90"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-[#E8F5E9] via-[#F5F9F6] to-[#E8F5E9] opacity-90"></div>
         
         <div className="relative max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
           {/* Text Content */}
-          <div className="text-left space-y-8">
-            <div className="flex gap-4 animate-fade-in">
-              <Leaf className="h-12 w-12 text-green-600 animate-bounce" />
-              <TreePine className="h-12 w-12 text-green-700 animate-pulse" />
-              <Sprout className="h-12 w-12 text-green-500 animate-bounce" />
+          <div className="text-left space-y-6">
+            <div className="flex items-center gap-2">
+              <Leaf className="h-6 w-6 text-green-600" />
+              <span className="text-green-700 font-semibold">EnergyTrack</span>
             </div>
             
-            <h1 className="text-5xl md:text-6xl font-bold leading-tight animate-fade-in">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-green-700">
-                Track Your Energy,
-              </span>
+            <h1 className="text-5xl md:text-6xl font-bold leading-tight text-green-800">
+              Track Your Energy,
               <br />
-              <span className="text-green-600">Save Our Planet</span>
+              Save the Planet
             </h1>
             
-            <p className="text-xl text-green-700 max-w-xl animate-fade-in delay-100">
-              Join thousands of eco-conscious users who are making a difference with our sustainable energy tracking platform.
+            <p className="text-lg text-gray-600 max-w-xl">
+              Monitor your energy consumption, reduce your carbon footprint, and save money with our intuitive tracking tools.
             </p>
             
-            <Button 
-              onClick={handleGetStarted}
-              className="bg-green-600 hover:bg-green-700 text-white px-8 py-6 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in delay-200"
-            >
-              Get Started <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
+            <div className="space-y-4">
+              <Button 
+                onClick={handleGetStarted}
+                className="bg-black hover:bg-gray-800 text-white px-6 py-2 rounded-md"
+              >
+                Get Started
+              </Button>
+              <p className="text-sm text-gray-500">Start your free trial. No credit card required.</p>
+            </div>
+
+            <div className="flex gap-4 pt-8">
+              <div className="flex items-center gap-2 text-sm text-green-700">
+                <Leaf className="h-5 w-5" />
+                Save up to 30% on bills
+              </div>
+              <div className="flex items-center gap-2 text-sm text-green-700">
+                <Leaf className="h-5 w-5" />
+                Reduce CO2 emissions
+              </div>
+            </div>
           </div>
 
-          {/* Image */}
-          <div className="hidden md:block relative animate-fade-in delay-300">
-            <img
-              src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e"
-              alt="Sustainable energy concept"
-              className="rounded-2xl shadow-2xl transform hover:scale-105 transition-transform duration-500 object-cover w-full max-w-lg mx-auto"
-            />
-            <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-green-100 rounded-full opacity-50 animate-pulse"></div>
-            <div className="absolute -top-6 -right-6 w-32 h-32 bg-green-50 rounded-full opacity-50 animate-pulse"></div>
+          {/* Grid Pattern */}
+          <div className="hidden md:grid grid-cols-3 gap-4">
+            {[...Array(9)].map((_, i) => (
+              <div
+                key={i}
+                className="aspect-square rounded-xl bg-gradient-to-br from-green-200 via-green-100 to-blue-100 p-4 flex items-center justify-center"
+              >
+                <Leaf className="h-8 w-8 text-white" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Energy Usage Graph Section */}
+      <section className="py-20 px-4 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-green-800 mb-4">Your Energy Usage</h2>
+            <p className="text-gray-600">Track and analyze your monthly energy consumption</p>
+          </div>
+          <div className="bg-white rounded-xl shadow-lg p-8">
+            <EnergyChart />
           </div>
         </div>
       </section>
@@ -100,14 +126,14 @@ const Index = () => {
             </div>
             <div className="text-center p-6 transform transition-all duration-300 hover:scale-105">
               <div className="bg-green-50 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <TreePine className="h-8 w-8 text-green-600" />
+                <Leaf className="h-8 w-8 text-green-600" />
               </div>
               <h3 className="text-xl font-semibold mb-2 text-green-800">Smart Insights</h3>
               <p className="text-gray-600">Get personalized recommendations to optimize your energy usage.</p>
             </div>
             <div className="text-center p-6 transform transition-all duration-300 hover:scale-105">
               <div className="bg-green-50 rounded-full p-4 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-                <Sprout className="h-8 w-8 text-green-600" />
+                <Leaf className="h-8 w-8 text-green-600" />
               </div>
               <h3 className="text-xl font-semibold mb-2 text-green-800">Environmental Impact</h3>
               <p className="text-gray-600">Track your carbon footprint reduction and environmental contribution.</p>
@@ -135,11 +161,15 @@ const Index = () => {
           <p className="text-xl mb-8 opacity-90">
             Join our community of environmentally conscious users today.
           </p>
-          <form onSubmit={handleGetStarted} className="max-w-md mx-auto flex gap-4">
-            <Button type="button" onClick={handleGetStarted} variant="secondary" className="bg-white text-green-600 hover:bg-green-50">
+          <div className="flex justify-center">
+            <Button 
+              onClick={handleGetStarted} 
+              variant="secondary" 
+              className="bg-white text-green-600 hover:bg-green-50"
+            >
               Get Started <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
-          </form>
+          </div>
         </div>
       </section>
     </div>
