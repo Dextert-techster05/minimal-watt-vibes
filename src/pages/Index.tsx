@@ -42,64 +42,64 @@ const Index = () => {
   return (
     <TooltipProvider>
       <div className="min-h-screen">
-      <section className="relative min-h-[90vh] flex items-center">
-        {/* Background with gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#E8F5E9] via-[#F5F9F6] to-[#E8F5E9] opacity-90"></div>
-        
-        <div className="relative max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
-          {/* Text Content */}
-          <div className="text-left space-y-6">
-            <div className="flex items-center gap-2">
-              <Leaf className="h-6 w-6 text-green-600" />
-              <span className="text-green-700 font-semibold">EnergyTrack</span>
-            </div>
-            
-            <h1 className="text-5xl md:text-6xl font-bold leading-tight text-green-800">
-              Track Your Energy,
-              <br />
-              Save the Planet
-            </h1>
-            
-            <p className="text-lg text-gray-600 max-w-xl">
-              Monitor your energy consumption, reduce your carbon footprint, and save money with our intuitive tracking tools.
-            </p>
-            
-            <div className="space-y-4">
-              <Button 
-                onClick={handleGetStarted}
-                className="bg-black hover:bg-gray-800 text-white px-6 py-2 rounded-md"
-              >
-                Get Started
-              </Button>
-              <p className="text-sm text-gray-500">Start your free trial. No credit card required.</p>
+        <section className="relative min-h-[90vh] flex items-center">
+          {/* Background with gradient */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#2E8B57] via-[#3CB371] to-[#20B2AA] opacity-80"></div>
+          
+          <div className="relative max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
+            {/* Text Content */}
+            <div className="text-left space-y-6">
+              <div className="flex items-center gap-2">
+                <Leaf className="h-6 w-6 text-white" />
+                <span className="text-white font-semibold">EnergyTrack</span>
+              </div>
+              
+              <h1 className="text-5xl md:text-6xl font-bold leading-tight text-white">
+                Track Your Energy,
+                <br />
+                Save the Planet
+              </h1>
+              
+              <p className="text-lg text-white/90 max-w-xl">
+                Monitor your energy consumption, reduce your carbon footprint, and save money with our intuitive tracking tools.
+              </p>
+              
+              <div className="space-y-4">
+                <Button 
+                  onClick={handleGetStarted}
+                  className="bg-white hover:bg-gray-100 text-green-700 px-6 py-2 rounded-md"
+                >
+                  Get Started
+                </Button>
+                <p className="text-sm text-white/80">Start your free trial. No credit card required.</p>
+              </div>
+
+              <div className="flex gap-4 pt-8">
+                <div className="flex items-center gap-2 text-sm text-white">
+                  <Leaf className="h-5 w-5" />
+                  Save up to 30% on bills
+                </div>
+                <div className="flex items-center gap-2 text-sm text-white">
+                  <Leaf className="h-5 w-5" />
+                  Reduce CO2 emissions
+                </div>
+              </div>
             </div>
 
-            <div className="flex gap-4 pt-8">
-              <div className="flex items-center gap-2 text-sm text-green-700">
-                <Leaf className="h-5 w-5" />
-                Save up to 30% on bills
-              </div>
-              <div className="flex items-center gap-2 text-sm text-green-700">
-                <Leaf className="h-5 w-5" />
-                Reduce CO2 emissions
-              </div>
+            {/* Grid Pattern */}
+            <div className="hidden md:grid grid-cols-3 gap-3 p-4">
+              {[...Array(9)].map((_, i) => (
+                <div
+                  key={i}
+                  className="aspect-[4/3] rounded-lg bg-gradient-to-br from-[#4CAF50]/30 via-[#2E8B57]/30 to-[#20B2AA]/30 p-4 flex items-center justify-center backdrop-blur-sm border border-white/20 transform transition-all duration-300 hover:scale-105"
+                >
+                  <Leaf className="h-6 w-6 text-white" />
+                </div>
+              ))}
             </div>
           </div>
+        </section>
 
-          {/* Grid Pattern */}
-          <div className="hidden md:grid grid-cols-3 gap-4">
-            {[...Array(9)].map((_, i) => (
-              <div
-                key={i}
-                className="aspect-square rounded-xl bg-gradient-to-br from-green-200 via-green-100 to-blue-100 p-4 flex items-center justify-center"
-              >
-                <Leaf className="h-8 w-8 text-white" />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-        
         {/* Energy Usage Graph Section */}
         <section className="py-20 px-4 bg-white">
           <div className="max-w-7xl mx-auto">
@@ -112,7 +112,7 @@ const Index = () => {
             </div>
           </div>
         </section>
-
+        
       <section className="py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12 text-green-800">Why Choose Us?</h2>
@@ -153,7 +153,6 @@ const Index = () => {
         </div>
       </section>
 
-        {/* CTA Section */}
         <section className="py-20 px-4 bg-green-600 text-white">
           <div className="max-w-7xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-6">Ready to Make a Difference?</h2>
