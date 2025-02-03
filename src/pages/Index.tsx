@@ -1,25 +1,19 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import Testimonial from "@/components/Testimonial";
 import { ArrowRight, Leaf, TreePine, Sprout } from "lucide-react";
 
 const Index = () => {
-  const [email, setEmail] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) {
-      toast({
-        title: "Success!",
-        description: "Thank you for joining us. Redirecting to the form...",
-      });
-      navigate("/energy-form");
-    }
+  const handleGetStarted = () => {
+    toast({
+      title: "Great!",
+      description: "Let's get you started on your energy-saving journey.",
+    });
+    navigate("/energy-form");
   };
 
   const testimonials = [
@@ -46,32 +40,49 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-[#e6f4ea] to-white py-20 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="flex justify-center mb-6 gap-4">
-            <Leaf className="h-12 w-12 text-green-500 animate-bounce" />
-            <TreePine className="h-12 w-12 text-green-600 animate-pulse" />
-            <Sprout className="h-12 w-12 text-green-400 animate-bounce" />
-          </div>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-green-400">
-            Track Your Energy, Save Our Planet
-          </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Join thousands of eco-conscious users who are making a difference with our sustainable energy tracking platform.
-          </p>
-          <form onSubmit={handleSubmit} className="max-w-md mx-auto flex gap-4">
-            <Input
-              type="email"
-              placeholder="Enter your email to get started"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="flex-1"
-            />
-            <Button type="submit" className="bg-green-600 hover:bg-green-700">
-              Get Started <ArrowRight className="ml-2 h-4 w-4" />
+      <section className="relative min-h-[90vh] flex items-center">
+        {/* Background with gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#E5DEFF] via-white to-[#F2FCE2] opacity-90"></div>
+        
+        <div className="relative max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
+          {/* Text Content */}
+          <div className="text-left space-y-8">
+            <div className="flex gap-4 animate-fade-in">
+              <Leaf className="h-12 w-12 text-[#8B5CF6] animate-bounce" />
+              <TreePine className="h-12 w-12 text-[#7E69AB] animate-pulse" />
+              <Sprout className="h-12 w-12 text-[#9b87f5] animate-bounce" />
+            </div>
+            
+            <h1 className="text-5xl md:text-6xl font-bold leading-tight animate-fade-in">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#8B5CF6] to-[#7E69AB]">
+                Track Your Energy,
+              </span>
+              <br />
+              <span className="text-[#9b87f5]">Save Our Planet</span>
+            </h1>
+            
+            <p className="text-xl text-gray-600 max-w-xl animate-fade-in delay-100">
+              Join thousands of eco-conscious users who are making a difference with our sustainable energy tracking platform.
+            </p>
+            
+            <Button 
+              onClick={handleGetStarted}
+              className="bg-[#8B5CF6] hover:bg-[#7E69AB] text-white px-8 py-6 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in delay-200"
+            >
+              Get Started <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-          </form>
+          </div>
+
+          {/* Image */}
+          <div className="hidden md:block relative animate-fade-in delay-300">
+            <img
+              src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d"
+              alt="Person working on energy efficiency"
+              className="rounded-2xl shadow-2xl transform hover:scale-105 transition-transform duration-500 object-cover w-full max-w-lg mx-auto"
+            />
+            <div className="absolute -bottom-6 -left-6 w-24 h-24 bg-[#F2FCE2] rounded-full opacity-50 animate-pulse"></div>
+            <div className="absolute -top-6 -right-6 w-32 h-32 bg-[#E5DEFF] rounded-full opacity-50 animate-pulse"></div>
+          </div>
         </div>
       </section>
 
@@ -124,16 +135,8 @@ const Index = () => {
           <p className="text-xl mb-8 opacity-90">
             Join our community of environmentally conscious users today.
           </p>
-          <form onSubmit={handleSubmit} className="max-w-md mx-auto flex gap-4">
-            <Input
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="flex-1 bg-white text-black"
-            />
-            <Button type="submit" variant="secondary" className="bg-white text-green-600 hover:bg-green-50">
+          <form onSubmit={handleGetStarted} className="max-w-md mx-auto flex gap-4">
+            <Button type="button" onClick={handleGetStarted} variant="secondary" className="bg-white text-green-600 hover:bg-green-50">
               Get Started <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </form>
