@@ -22,34 +22,16 @@ const Auth = () => {
     try {
       if (isSignUp) {
         console.log("Attempting to sign up...");
-        const { data: existingUser } = await supabase
-          .from('profiles')
-          .select('id')
-          .eq('email', email)
-          .single();
-
-        if (existingUser) {
-          throw new Error("An account with this email already exists. Please sign in instead.");
-        }
-
-        const { data, error: signUpError } = await supabase.auth.signUp({
+        const { error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
             emailRedirectTo: `${window.location.origin}/auth`,
-            data: {
-              email: email,
-            }
           },
         });
-        console.log("Sign up response:", { data, error: signUpError });
+        console.log("Sign up response:", { error: signUpError });
 
-        if (signUpError) {
-          if (signUpError.message.includes("Password should be")) {
-            throw new Error("Password must be at least 6 characters long.");
-          }
-          throw signUpError;
-        }
+        if (signUpError) throw signUpError;
         
         toast({
           title: "Success!",
@@ -57,23 +39,14 @@ const Auth = () => {
         });
       } else {
         console.log("Attempting to sign in...");
-        const { data: userExists } = await supabase.auth.getUser();
-        console.log("User exists check:", userExists);
-
-        const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        const { error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
-        console.log("Sign in response:", { data, error: signInError });
+        console.log("Sign in response:", { error: signInError });
 
         if (signInError) {
-          if (signInError.message === "Invalid login credentials") {
-            throw new Error("Invalid email or password. Please try again.");
-          }
-          if (signInError.message.includes("Email not confirmed")) {
-            throw new Error("Please verify your email address before signing in.");
-          }
-          throw signInError;
+          throw new Error("Invalid email or password. Please try again.");
         }
 
         console.log("Sign in successful, navigating to home...");
@@ -93,8 +66,8 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-blue-50 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md backdrop-blur-sm bg-white/80 border-green-100">
-        <CardHeader>
+      <Card className="w-full max-w-md bg-white/95 shadow-lg">
+        <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold text-center text-green-800">
             {isSignUp ? "Create Account" : "Welcome Back"}
           </CardTitle>
@@ -108,7 +81,7 @@ const Auth = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
             <div className="space-y-2">
@@ -118,22 +91,22 @@ const Auth = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
                 minLength={6}
               />
             </div>
             <Button
               type="submit"
-              className="w-full bg-primary hover:bg-primary/90 transition-colors"
+              className="w-full bg-purple-500 hover:bg-purple-600 text-white py-2 rounded-md transition-colors"
               disabled={loading}
             >
               {loading ? "Loading..." : isSignUp ? "Sign Up" : "Sign In"}
             </Button>
-            <div className="text-center">
+            <div className="text-center mt-4">
               <button
                 type="button"
                 onClick={() => setIsSignUp(!isSignUp)}
-                className="text-sm text-gray-600 hover:text-primary transition-colors"
+                className="text-sm text-gray-600 hover:text-purple-500 transition-colors"
               >
                 {isSignUp
                   ? "Already have an account? Sign In"
