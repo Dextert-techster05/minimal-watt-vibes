@@ -4,6 +4,7 @@ import { useToast } from "@/components/ui/use-toast";
 import Testimonial from "@/components/Testimonial";
 import { ArrowRight, Leaf } from "lucide-react";
 import EnergyChart from "@/components/EnergyChart";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -39,8 +40,8 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
+    <TooltipProvider>
+      <div className="min-h-screen">
       <section className="relative min-h-[90vh] flex items-center">
         {/* Background with gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-[#E8F5E9] via-[#F5F9F6] to-[#E8F5E9] opacity-90"></div>
@@ -98,21 +99,20 @@ const Index = () => {
           </div>
         </div>
       </section>
-
-      {/* Energy Usage Graph Section */}
-      <section className="py-20 px-4 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-green-800 mb-4">Your Energy Usage</h2>
-            <p className="text-gray-600">Track and analyze your monthly energy consumption</p>
+        
+        {/* Energy Usage Graph Section */}
+        <section className="py-20 px-4 bg-white">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold text-green-800 mb-4">Your Energy Usage</h2>
+              <p className="text-gray-600">Track and analyze your monthly energy consumption</p>
+            </div>
+            <div className="bg-white rounded-xl shadow-lg p-8">
+              <EnergyChart />
+            </div>
           </div>
-          <div className="bg-white rounded-xl shadow-lg p-8">
-            <EnergyChart />
-          </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Features Section */}
       <section className="py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12 text-green-800">Why Choose Us?</h2>
@@ -142,7 +142,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
       <section className="py-20 px-4 bg-gradient-to-b from-white to-[#e6f4ea]">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12 text-green-800">What Our Users Say</h2>
@@ -154,25 +153,26 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 px-4 bg-green-600 text-white">
-        <div className="max-w-7xl mx-auto text-center">
-          <h2 className="text-3xl font-bold mb-6">Ready to Make a Difference?</h2>
-          <p className="text-xl mb-8 opacity-90">
-            Join our community of environmentally conscious users today.
-          </p>
-          <div className="flex justify-center">
-            <Button 
-              onClick={handleGetStarted} 
-              variant="secondary" 
-              className="bg-white text-green-600 hover:bg-green-50"
-            >
-              Get Started <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
+        {/* CTA Section */}
+        <section className="py-20 px-4 bg-green-600 text-white">
+          <div className="max-w-7xl mx-auto text-center">
+            <h2 className="text-3xl font-bold mb-6">Ready to Make a Difference?</h2>
+            <p className="text-xl mb-8 opacity-90">
+              Join our community of environmentally conscious users today.
+            </p>
+            <div className="flex justify-center">
+              <Button 
+                onClick={handleGetStarted} 
+                variant="secondary" 
+                className="bg-white text-green-600 hover:bg-green-50"
+              >
+                Get Started <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </div>
           </div>
-        </div>
-      </section>
-    </div>
+        </section>
+      </div>
+    </TooltipProvider>
   );
 };
 
