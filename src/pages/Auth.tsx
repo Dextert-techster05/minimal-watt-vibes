@@ -15,7 +15,6 @@ const Auth = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check if user is already logged in
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
@@ -33,7 +32,6 @@ const Auth = () => {
 
     try {
       if (isSignUp) {
-        console.log("Attempting to sign up...");
         const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
@@ -41,7 +39,6 @@ const Auth = () => {
             emailRedirectTo: `${window.location.origin}/auth`,
           },
         });
-        console.log("Sign up response:", { data: signUpData, error: signUpError });
 
         if (signUpError) throw signUpError;
         
@@ -50,14 +47,38 @@ const Auth = () => {
           description: "Please check your email to verify your account.",
         });
       } else {
-        console.log("Attempting to sign in...");
+        // First check if the user exists
+        const { data: { users }, error: getUserError } = await supabase.auth.admin.listUsers({
+          filters: {
+            email: email
+          }
+        });
+
+        if (getUserError) {
+          console.error("Error checking user existence:", getUserError);
+          throw new Error("Unable to verify user account");
+        }
+
+        if (!users || users.length === 0) {
+          toast({
+            title: "Account not found",
+            description: "This email is not registered. Please sign up first.",
+            variant: "destructive",
+          });
+          setIsSignUp(true);
+          setLoading(false);
+          return;
+        }
+
         const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
-        console.log("Sign in response:", { data: signInData, error: signInError });
 
         if (signInError) {
+          if (signInError.message.includes("Invalid login credentials")) {
+            throw new Error("Incorrect password. Please try again.");
+          }
           throw signInError;
         }
 
@@ -70,18 +91,10 @@ const Auth = () => {
       }
     } catch (error: any) {
       console.error("Authentication error:", error);
-      let errorMessage = "An error occurred during authentication";
       
-      // Handle specific error cases
-      if (error.message?.toLowerCase().includes("invalid login credentials")) {
-        errorMessage = "Invalid email or password. Please check your credentials and try again.";
-      } else if (error.message?.toLowerCase().includes("email already registered")) {
-        errorMessage = "This email is already registered. Please try signing in instead.";
-      }
-
       toast({
         title: "Error",
-        description: errorMessage,
+        description: error.message || "An error occurred during authentication",
         variant: "destructive",
       });
     } finally {
