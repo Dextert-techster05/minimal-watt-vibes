@@ -42,66 +42,75 @@ const Index = () => {
     <div className="min-h-screen">
       <section className="relative min-h-[90vh] overflow-hidden">
         {/* Background with natural gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#f0f9ff] via-[#e0f2fe] to-[#bae6fd] opacity-90"></div>
+        <div 
+          className="absolute inset-0 bg-gradient-to-br from-emerald-100 via-teal-100 to-cyan-100 opacity-90"
+          style={{
+            backgroundImage: `url('/lovable-uploads/1bd4b9a6-9b71-4a40-ac16-5bd932e6dbae.png')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+          }}
+        />
         
         {/* Hero Content Container */}
         <div className="relative max-w-7xl mx-auto px-4 py-20">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             {/* Left Content */}
-            <div className="space-y-8">
+            <div className="space-y-8 bg-white/10 backdrop-blur-sm p-8 rounded-2xl">
               {/* Logo and Navigation */}
               <div className="flex items-center gap-2 mb-16">
-                <Leaf className="h-8 w-8 text-green-600" />
-                <span className="text-green-700 font-semibold text-xl">EnergyTrack</span>
+                <Leaf className="h-8 w-8 text-emerald-700" />
+                <span className="text-emerald-800 font-semibold text-xl">EnergyTrack</span>
               </div>
               
               {/* Hero Text */}
-              <h1 className="text-6xl font-bold leading-tight text-green-800">
+              <h1 className="text-6xl font-bold leading-tight text-emerald-900">
                 Smart Energy,
                 <br />
                 Brighter Future
               </h1>
               
-              <p className="text-xl text-green-700 max-w-xl leading-relaxed">
+              <p className="text-xl text-emerald-800 max-w-xl leading-relaxed">
                 Transform your energy consumption into sustainable living. Monitor, optimize, and make a difference with our innovative tracking solutions.
               </p>
               
               <div className="flex gap-4 items-center">
                 <Button 
                   onClick={handleGetStarted}
-                  className="bg-green-600 hover:bg-green-700 text-white px-8 py-6 text-lg rounded-full transition-all duration-300"
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-6 text-lg rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
                 >
                   Start Your Journey
                 </Button>
-                <p className="text-sm text-green-700">Free to get started</p>
+                <p className="text-sm text-emerald-800 font-medium">Free to get started</p>
               </div>
 
               <div className="flex gap-6 pt-4">
-                <div className="flex items-center gap-2 text-green-700">
+                <div className="flex items-center gap-2 text-emerald-800">
                   <Leaf className="h-5 w-5" />
                   Reduce Energy Costs
                 </div>
-                <div className="flex items-center gap-2 text-green-700">
+                <div className="flex items-center gap-2 text-emerald-800">
                   <Leaf className="h-5 w-5" />
                   Save the Planet
                 </div>
               </div>
             </div>
 
-            {/* Right Content - Hero Image */}
+            {/* Right Content - Decorative Elements */}
             <div className="relative h-[500px] flex items-center justify-center">
-              <img 
-                src="/lovable-uploads/10baf9f7-7d79-4cd7-9267-c7d929815e12.png"
-                alt="Eco-friendly energy concept"
-                className="w-[400px] h-auto object-contain animate-float"
-              />
+              <div className="grid grid-cols-3 gap-4 w-full max-w-md">
+                {[...Array(9)].map((_, index) => (
+                  <div
+                    key={index}
+                    className="aspect-video rounded-xl bg-gradient-to-br from-emerald-400/20 to-cyan-400/20 backdrop-blur-sm shadow-lg"
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Keep existing sections */}
-      {/* Energy Usage Graph Section */}
       <section className="py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
