@@ -42,15 +42,7 @@ const Index = () => {
     <div className="min-h-screen">
       <section className="relative min-h-[90vh] overflow-hidden">
         {/* Background with natural gradient */}
-        <div 
-          className="absolute inset-0 bg-gradient-to-br from-emerald-100 via-teal-100 to-cyan-100 opacity-90"
-          style={{
-            backgroundImage: `url('/lovable-uploads/1bd4b9a6-9b71-4a40-ac16-5bd932e6dbae.png')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-          }}
-        />
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-100 via-teal-100 to-cyan-100 opacity-90" />
         
         {/* Hero Content Container */}
         <div className="relative max-w-7xl mx-auto px-4 py-20">
@@ -96,16 +88,13 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Right Content - Decorative Elements */}
+            {/* Right Content - Hero Image */}
             <div className="relative h-[500px] flex items-center justify-center">
-              <div className="grid grid-cols-3 gap-4 w-full max-w-md">
-                {[...Array(9)].map((_, index) => (
-                  <div
-                    key={index}
-                    className="aspect-video rounded-xl bg-gradient-to-br from-emerald-400/20 to-cyan-400/20 backdrop-blur-sm shadow-lg"
-                  />
-                ))}
-              </div>
+              <img 
+                src="/lovable-uploads/1bd4b9a6-9b71-4a40-ac16-5bd932e6dbae.png"
+                alt="Energy concept illustration"
+                className="w-full h-full object-contain animate-float"
+              />
             </div>
           </div>
         </div>
