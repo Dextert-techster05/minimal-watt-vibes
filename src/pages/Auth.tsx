@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,18 @@ const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  useEffect(() => {
+    // Check if user is already logged in
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        console.log("User already logged in, redirecting to home");
+        navigate("/");
+      }
+    };
+    checkUser();
+  }, [navigate]);
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,8 +61,12 @@ const Auth = () => {
           throw signInError;
         }
 
-        console.log("Sign in successful, navigating to home...");
-        navigate("/");
+        if (signInData.session) {
+          console.log("Sign in successful, navigating to home...");
+          navigate("/");
+        } else {
+          throw new Error("No session created after login");
+        }
       }
     } catch (error: any) {
       console.error("Authentication error:", error);
