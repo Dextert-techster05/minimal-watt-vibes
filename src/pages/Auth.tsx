@@ -47,37 +47,23 @@ const Auth = () => {
           description: "Please check your email to verify your account.",
         });
       } else {
-        // First check if the user exists
-        const { data: { users }, error: getUserError } = await supabase.auth.admin.listUsers({
-          filters: {
-            email: email
-          }
-        });
-
-        if (getUserError) {
-          console.error("Error checking user existence:", getUserError);
-          throw new Error("Unable to verify user account");
-        }
-
-        if (!users || users.length === 0) {
-          toast({
-            title: "Account not found",
-            description: "This email is not registered. Please sign up first.",
-            variant: "destructive",
-          });
-          setIsSignUp(true);
-          setLoading(false);
-          return;
-        }
-
         const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
 
         if (signInError) {
+          // If the error indicates invalid credentials, it could mean either:
+          // 1. The user doesn't exist
+          // 2. The password is incorrect
+          // We'll suggest signing up if it's likely the user doesn't exist
           if (signInError.message.includes("Invalid login credentials")) {
-            throw new Error("Incorrect password. Please try again.");
+            toast({
+              title: "Sign in failed",
+              description: "Please check your email and password, or sign up if you don't have an account.",
+              variant: "destructive",
+            });
+            return;
           }
           throw signInError;
         }
