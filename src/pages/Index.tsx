@@ -42,59 +42,65 @@ const Index = () => {
     <div className="min-h-screen">
       <section className="relative min-h-[90vh] overflow-hidden">
         {/* Background with natural gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#a8e6cf] via-[#7dcea0] to-[#3d8168] opacity-90"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-[#f0f9ff] via-[#e0f2fe] to-[#bae6fd] opacity-90"></div>
         
-        {/* Decorative elements */}
-        <div className="absolute bottom-0 right-0 w-2/3 h-full">
-          <div className="relative h-full">
-            <div className="absolute bottom-0 right-0 w-full h-full bg-[url('/lovable-uploads/6a129ea6-37f2-4547-b59a-4485053d463d.png')] bg-contain bg-no-repeat bg-right-bottom opacity-30"></div>
-          </div>
-        </div>
-        
-        {/* Content */}
+        {/* Hero Content Container */}
         <div className="relative max-w-7xl mx-auto px-4 py-20">
-          <div className="max-w-2xl space-y-8">
-            {/* Logo and Navigation */}
-            <div className="flex items-center gap-2 mb-16">
-              <Leaf className="h-8 w-8 text-white" />
-              <span className="text-white font-semibold text-xl">EnergyTrack</span>
-            </div>
-            
-            {/* Hero Content */}
-            <h1 className="text-6xl font-bold leading-tight text-white">
-              Track Your Energy,
-              <br />
-              Save Our Planet
-            </h1>
-            
-            <p className="text-xl text-white/90 max-w-xl leading-relaxed">
-              Monitor your energy consumption, reduce your carbon footprint, and save money with our intuitive tracking tools.
-            </p>
-            
-            <div className="flex gap-4 items-center">
-              <Button 
-                onClick={handleGetStarted}
-                className="bg-[#4ade80] hover:bg-[#22c55e] text-white px-8 py-6 text-lg rounded-full transition-all duration-300"
-              >
-                Get Started
-              </Button>
-              <p className="text-sm text-white/80">No credit card required</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            {/* Left Content */}
+            <div className="space-y-8">
+              {/* Logo and Navigation */}
+              <div className="flex items-center gap-2 mb-16">
+                <Leaf className="h-8 w-8 text-green-600" />
+                <span className="text-green-700 font-semibold text-xl">EnergyTrack</span>
+              </div>
+              
+              {/* Hero Text */}
+              <h1 className="text-6xl font-bold leading-tight text-green-800">
+                Smart Energy,
+                <br />
+                Brighter Future
+              </h1>
+              
+              <p className="text-xl text-green-700 max-w-xl leading-relaxed">
+                Transform your energy consumption into sustainable living. Monitor, optimize, and make a difference with our innovative tracking solutions.
+              </p>
+              
+              <div className="flex gap-4 items-center">
+                <Button 
+                  onClick={handleGetStarted}
+                  className="bg-green-600 hover:bg-green-700 text-white px-8 py-6 text-lg rounded-full transition-all duration-300"
+                >
+                  Start Your Journey
+                </Button>
+                <p className="text-sm text-green-700">Free to get started</p>
+              </div>
+
+              <div className="flex gap-6 pt-4">
+                <div className="flex items-center gap-2 text-green-700">
+                  <Leaf className="h-5 w-5" />
+                  Reduce Energy Costs
+                </div>
+                <div className="flex items-center gap-2 text-green-700">
+                  <Leaf className="h-5 w-5" />
+                  Save the Planet
+                </div>
+              </div>
             </div>
 
-            <div className="flex gap-6 pt-8">
-              <div className="flex items-center gap-2 text-white">
-                <Leaf className="h-5 w-5" />
-                Save up to 30% on bills
-              </div>
-              <div className="flex items-center gap-2 text-white">
-                <Leaf className="h-5 w-5" />
-                Reduce CO2 emissions
-              </div>
+            {/* Right Content - Hero Image */}
+            <div className="relative h-[500px] flex items-center justify-center">
+              <img 
+                src="/lovable-uploads/10baf9f7-7d79-4cd7-9267-c7d929815e12.png"
+                alt="Eco-friendly energy concept"
+                className="w-[400px] h-auto object-contain animate-float"
+              />
             </div>
           </div>
         </div>
       </section>
 
+      {/* Keep existing sections */}
       {/* Energy Usage Graph Section */}
       <section className="py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
