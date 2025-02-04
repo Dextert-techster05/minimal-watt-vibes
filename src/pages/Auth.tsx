@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -22,14 +22,14 @@ const Auth = () => {
     try {
       if (isSignUp) {
         console.log("Attempting to sign up...");
-        const { error: signUpError } = await supabase.auth.signUp({
+        const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
             emailRedirectTo: `${window.location.origin}/auth`,
           },
         });
-        console.log("Sign up response:", { error: signUpError });
+        console.log("Sign up response:", { data: signUpData, error: signUpError });
 
         if (signUpError) throw signUpError;
         
@@ -39,14 +39,14 @@ const Auth = () => {
         });
       } else {
         console.log("Attempting to sign in...");
-        const { error: signInError } = await supabase.auth.signInWithPassword({
+        const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
-        console.log("Sign in response:", { error: signInError });
+        console.log("Sign in response:", { data: signInData, error: signInError });
 
         if (signInError) {
-          throw new Error("Invalid email or password. Please try again.");
+          throw signInError;
         }
 
         console.log("Sign in successful, navigating to home...");
@@ -54,9 +54,18 @@ const Auth = () => {
       }
     } catch (error: any) {
       console.error("Authentication error:", error);
+      let errorMessage = "An error occurred during authentication";
+      
+      // Handle specific error cases
+      if (error.message?.toLowerCase().includes("invalid login credentials")) {
+        errorMessage = "Invalid email or password. Please check your credentials and try again.";
+      } else if (error.message?.toLowerCase().includes("email already registered")) {
+        errorMessage = "This email is already registered. Please try signing in instead.";
+      }
+
       toast({
         title: "Error",
-        description: error.message || "An error occurred during authentication",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
