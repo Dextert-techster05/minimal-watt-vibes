@@ -6,7 +6,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import EnergyAnalytics from "@/components/EnergyAnalytics";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -24,6 +24,7 @@ const EnergyForm = () => {
   const queryClient = useQueryClient();
   const [currentSection, setCurrentSection] = useState(0);
   const [showForm, setShowForm] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     userType: "household",
     location: "",
@@ -37,8 +38,8 @@ const EnergyForm = () => {
     monthlyBill: "",
   });
 
-  // Fetch existing energy data
-  const { data: energyData, refetch } = useQuery({
+  // Fetch existing energy data with enabled option
+  const { data: energyData, refetch, isLoading: isLoadingData } = useQuery({
     queryKey: ['energyData'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -49,6 +50,7 @@ const EnergyForm = () => {
       if (error) throw error;
       return data;
     },
+    enabled: !showForm, // Only fetch when showing analytics
   });
 
   const validateCurrentSection = () => {
@@ -157,12 +159,12 @@ const EnergyForm = () => {
 
     if (currentSection === sections.length - 1) {
       try {
+        setIsSubmitting(true);
         const { data: session } = await supabase.auth.getSession();
         if (!session.session?.user.id) {
           throw new Error("No authenticated user found");
         }
 
-        // Convert Appliance[] to Json[] for Supabase
         const appliancesJson = formData.appliances.map(app => ({
           name: app.name,
           power: app.power,
@@ -204,6 +206,8 @@ const EnergyForm = () => {
           description: error.message || "Failed to save energy data",
           variant: "destructive",
         });
+      } finally {
+        setIsSubmitting(false);
       }
     } else {
       nextSection();
@@ -466,28 +470,39 @@ const EnergyForm = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8">
-      {energyData && !showForm ? (
+      {!showForm ? (
         <div className="max-w-7xl mx-auto space-y-8">
-          <Card className="backdrop-blur-sm bg-white/80">
-            <CardHeader>
-              <CardTitle className="text-2xl font-bold text-center text-green-800">
-                Your Energy Analytics
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <EnergyAnalytics data={energyData} />
-            </CardContent>
-          </Card>
-          
-          <Button
-            onClick={() => {
-              setShowForm(true);
-              setCurrentSection(0);
-            }}
-            className="w-full max-w-md mx-auto block"
-          >
-            Update Energy Information
-          </Button>
+          {isLoadingData ? (
+            <Card className="backdrop-blur-sm bg-white/80">
+              <CardContent className="flex flex-col items-center justify-center py-12">
+                <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
+                <p className="text-lg font-medium text-gray-600">Generating your energy analytics report...</p>
+              </CardContent>
+            </Card>
+          ) : (
+            <>
+              <Card className="backdrop-blur-sm bg-white/80">
+                <CardHeader>
+                  <CardTitle className="text-2xl font-bold text-center text-green-800">
+                    Your Energy Analytics
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <EnergyAnalytics data={energyData} />
+                </CardContent>
+              </Card>
+              
+              <Button
+                onClick={() => {
+                  setShowForm(true);
+                  setCurrentSection(0);
+                }}
+                className="w-full max-w-md mx-auto block"
+              >
+                Update Energy Information
+              </Button>
+            </>
+          )}
         </div>
       ) : (
         <Card className="max-w-2xl mx-auto backdrop-blur-sm bg-white/80 border-green-100 shadow-lg hover:shadow-xl transition-all duration-300">
@@ -521,7 +536,7 @@ const EnergyForm = () => {
                   type="button"
                   variant="outline"
                   onClick={() => currentSection > 0 && setCurrentSection(currentSection - 1)}
-                  disabled={currentSection === 0}
+                  disabled={currentSection === 0 || isSubmitting}
                   className="hover:bg-primary/5 transition-colors"
                 >
                   Previous
@@ -529,8 +544,16 @@ const EnergyForm = () => {
                 <Button
                   type="submit"
                   className="bg-primary hover:bg-primary/90 transition-colors"
+                  disabled={isSubmitting}
                 >
-                  {currentSection === sections.length - 1 ? "Submit" : "Next"}
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {currentSection === sections.length - 1 ? "Submitting..." : "Processing..."}
+                    </>
+                  ) : (
+                    currentSection === sections.length - 1 ? "Submit" : "Next"
+                  )}
                 </Button>
               </div>
             </form>
