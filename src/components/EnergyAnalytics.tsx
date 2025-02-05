@@ -9,7 +9,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 type EnergyData = Tables<"energy_consumption">;
 
 interface EnergyAnalyticsProps {
-  data: EnergyData;
+  data: EnergyData | null;
 }
 
 const EnergyAnalytics = ({ data }: EnergyAnalyticsProps) => {
@@ -18,6 +18,8 @@ const EnergyAnalytics = ({ data }: EnergyAnalyticsProps) => {
   const [energyTips, setEnergyTips] = useState<string[]>([]);
   
   useEffect(() => {
+    if (!data) return;
+
     // Calculate carbon footprint based on monthly bill and energy sources
     const calculateCarbonFootprint = () => {
       const monthlyBill = data.monthly_bill || 0;
@@ -80,6 +82,18 @@ const EnergyAnalytics = ({ data }: EnergyAnalyticsProps) => {
     determineConsumptionLevel();
     generateEnergyTips();
   }, [data]);
+
+  if (!data) {
+    return (
+      <Card className="p-6">
+        <CardContent className="text-center">
+          <AlertTriangle className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold mb-2">No Energy Data Available</h3>
+          <p className="text-gray-600">Please submit your energy consumption details to view the analytics.</p>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const energyIntensity = data.building_size 
     ? Math.round((Number(data.monthly_bill || 0) / Number(data.building_size)) * 100) / 100
