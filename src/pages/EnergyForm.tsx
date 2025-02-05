@@ -22,6 +22,7 @@ interface Appliance {
 const EnergyForm = () => {
   const { toast } = useToast();
   const [currentSection, setCurrentSection] = useState(0);
+  const [showForm, setShowForm] = useState(true);
   const [formData, setFormData] = useState({
     userType: "household",
     location: "",
@@ -49,8 +50,76 @@ const EnergyForm = () => {
     },
   });
 
+  const validateCurrentSection = () => {
+    switch (currentSection) {
+      case 0:
+        if (!formData.location || !formData.buildingSize || !formData.occupants) {
+          toast({
+            title: "Validation Error",
+            description: "Please fill in all fields before proceeding.",
+            variant: "destructive",
+          });
+          return false;
+        }
+        break;
+      case 1:
+        if (formData.energySources.length === 0 || !formData.energyProvider) {
+          toast({
+            title: "Validation Error",
+            description: "Please select at least one energy source and provide your energy provider.",
+            variant: "destructive",
+          });
+          return false;
+        }
+        break;
+      case 2:
+        if (formData.appliances.length === 0) {
+          toast({
+            title: "Validation Error",
+            description: "Please add at least one appliance.",
+            variant: "destructive",
+          });
+          return false;
+        }
+        // Validate each appliance has all fields filled
+        const invalidAppliance = formData.appliances.some(
+          app => !app.name || !app.power || !app.usage
+        );
+        if (invalidAppliance) {
+          toast({
+            title: "Validation Error",
+            description: "Please fill in all fields for each appliance.",
+            variant: "destructive",
+          });
+          return false;
+        }
+        break;
+      case 3:
+        if (!formData.peakUsageTime || !formData.highConsumptionSeason) {
+          toast({
+            title: "Validation Error",
+            description: "Please select both peak usage time and high consumption season.",
+            variant: "destructive",
+          });
+          return false;
+        }
+        break;
+      case 4:
+        if (!formData.monthlyBill) {
+          toast({
+            title: "Validation Error",
+            description: "Please enter your average monthly energy bill.",
+            variant: "destructive",
+          });
+          return false;
+        }
+        break;
+    }
+    return true;
+  };
+
   const nextSection = () => {
-    if (currentSection < sections.length - 1) {
+    if (validateCurrentSection() && currentSection < sections.length - 1) {
       setCurrentSection(currentSection + 1);
     }
   };
@@ -83,6 +152,8 @@ const EnergyForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validateCurrentSection()) return;
+
     if (currentSection === sections.length - 1) {
       try {
         const { data: session } = await supabase.auth.getSession();
@@ -120,6 +191,7 @@ const EnergyForm = () => {
           description: "Your energy consumption data has been saved.",
         });
 
+        setShowForm(false);
         // Refresh the data
         refetch();
       } catch (error: any) {
@@ -391,7 +463,7 @@ const EnergyForm = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8">
-      {energyData ? (
+      {energyData && !showForm ? (
         <div className="max-w-7xl mx-auto space-y-8">
           <Card className="backdrop-blur-sm bg-white/80">
             <CardHeader>
@@ -405,7 +477,7 @@ const EnergyForm = () => {
           </Card>
           
           <Button
-            onClick={() => setCurrentSection(0)}
+            onClick={() => setShowForm(true)}
             className="w-full max-w-md mx-auto block"
           >
             Update Energy Information
