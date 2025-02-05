@@ -9,7 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import EnergyAnalytics from "@/components/EnergyAnalytics";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Json } from "@/integrations/supabase/types";
 
 interface Appliance {
@@ -21,6 +21,7 @@ interface Appliance {
 
 const EnergyForm = () => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [currentSection, setCurrentSection] = useState(0);
   const [showForm, setShowForm] = useState(true);
   const [formData, setFormData] = useState({
@@ -191,9 +192,11 @@ const EnergyForm = () => {
           description: "Your energy consumption data has been saved.",
         });
 
+        // Invalidate and refetch the query to get fresh data
+        await queryClient.invalidateQueries({ queryKey: ['energyData'] });
+        await refetch();
+        
         setShowForm(false);
-        // Refresh the data
-        refetch();
       } catch (error: any) {
         console.error("Error saving energy data:", error);
         toast({
@@ -477,7 +480,10 @@ const EnergyForm = () => {
           </Card>
           
           <Button
-            onClick={() => setShowForm(true)}
+            onClick={() => {
+              setShowForm(true);
+              setCurrentSection(0);
+            }}
             className="w-full max-w-md mx-auto block"
           >
             Update Energy Information
