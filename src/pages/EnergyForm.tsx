@@ -373,7 +373,7 @@ const EnergyForm = () => {
       fields: (
         <div className="space-y-6">
           <div className="space-y-2">
-            <Label className="text-lg font-medium text-gray-700">Average Monthly Energy Bill ($)</Label>
+            <Label className="text-lg font-medium text-gray-700">Average Monthly Energy Bill (₹)</Label>
             <Input
               type="number"
               value={formData.monthlyBill}
