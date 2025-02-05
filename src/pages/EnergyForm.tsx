@@ -10,6 +10,7 @@ import { Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import EnergyAnalytics from "@/components/EnergyAnalytics";
 import { useQuery } from "@tanstack/react-query";
+import { Json } from "@/integrations/supabase/types";
 
 interface Appliance {
   id: string;
@@ -48,6 +49,12 @@ const EnergyForm = () => {
     },
   });
 
+  const nextSection = () => {
+    if (currentSection < sections.length - 1) {
+      setCurrentSection(currentSection + 1);
+    }
+  };
+
   const addAppliance = () => {
     setFormData({
       ...formData,
@@ -83,13 +90,20 @@ const EnergyForm = () => {
           throw new Error("No authenticated user found");
         }
 
+        // Convert Appliance[] to Json[] for Supabase
+        const appliancesJson = formData.appliances.map(app => ({
+          name: app.name,
+          power: app.power,
+          usage: app.usage
+        })) as Json[];
+
         const energyConsumptionData = {
           user_id: session.session.user.id,
           building_size: Number(formData.buildingSize),
           occupants: Number(formData.occupants),
           energy_sources: formData.energySources,
           energy_provider: formData.energyProvider,
-          appliances: formData.appliances,
+          appliances: appliancesJson,
           peak_usage_time: formData.peakUsageTime,
           high_consumption_season: formData.highConsumptionSeason,
           monthly_bill: Number(formData.monthlyBill),
