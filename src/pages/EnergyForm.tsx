@@ -7,6 +7,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Plus, Trash2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import EnergyAnalytics from "@/components/EnergyAnalytics";
+import { useQuery } from "@tanstack/react-query";
 
 interface Appliance {
   id: string;
@@ -19,25 +22,30 @@ const EnergyForm = () => {
   const { toast } = useToast();
   const [currentSection, setCurrentSection] = useState(0);
   const [formData, setFormData] = useState({
-    // Section 1: General Information
     userType: "household",
     location: "",
     buildingSize: "",
     occupants: "",
-    
-    // Section 2: Energy Sources
     energySources: [] as string[],
     energyProvider: "",
-    
-    // Section 3: Appliances
     appliances: [] as Appliance[],
-    
-    // Section 4: Usage Patterns
     peakUsageTime: "",
     highConsumptionSeason: "",
-    
-    // Section 5: Summary
     monthlyBill: "",
+  });
+
+  // Fetch existing energy data
+  const { data: energyData, refetch } = useQuery({
+    queryKey: ['energyData'],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('energy_consumption')
+        .select('*')
+        .maybeSingle();
+      
+      if (error) throw error;
+      return data;
+    },
   });
 
   const addAppliance = () => {
@@ -64,6 +72,53 @@ const EnergyForm = () => {
         app.id === id ? { ...app, [field]: value } : app
       ),
     });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (currentSection === sections.length - 1) {
+      try {
+        const { data: session } = await supabase.auth.getSession();
+        if (!session.session?.user.id) {
+          throw new Error("No authenticated user found");
+        }
+
+        const energyConsumptionData = {
+          user_id: session.session.user.id,
+          building_size: Number(formData.buildingSize),
+          occupants: Number(formData.occupants),
+          energy_sources: formData.energySources,
+          energy_provider: formData.energyProvider,
+          appliances: formData.appliances,
+          peak_usage_time: formData.peakUsageTime,
+          high_consumption_season: formData.highConsumptionSeason,
+          monthly_bill: Number(formData.monthlyBill),
+        };
+
+        const { error } = await supabase
+          .from('energy_consumption')
+          .upsert(energyConsumptionData);
+
+        if (error) throw error;
+
+        toast({
+          title: "Success!",
+          description: "Your energy consumption data has been saved.",
+        });
+
+        // Refresh the data
+        refetch();
+      } catch (error: any) {
+        console.error("Error saving energy data:", error);
+        toast({
+          title: "Error",
+          description: error.message || "Failed to save energy data",
+          variant: "destructive",
+        });
+      }
+    } else {
+      nextSection();
+    }
   };
 
   const sections = [
@@ -320,87 +375,76 @@ const EnergyForm = () => {
     },
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (currentSection === sections.length - 1) {
-      toast({
-        title: "Form submitted successfully!",
-        description: "Your energy consumption data has been recorded.",
-      });
-      console.log("Form data:", formData);
-    }
-  };
-
-  const nextSection = () => {
-    if (currentSection < sections.length - 1) {
-      setCurrentSection(currentSection + 1);
-    }
-  };
-
-  const previousSection = () => {
-    if (currentSection > 0) {
-      setCurrentSection(currentSection - 1);
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-green-50 to-blue-50 py-12 px-4 sm:px-6 lg:px-8">
-      <Card className="max-w-2xl mx-auto backdrop-blur-sm bg-white/80 border-green-100 shadow-lg hover:shadow-xl transition-all duration-300">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center text-green-800">
-            {sections[currentSection].title}
-          </CardTitle>
-          <div className="flex justify-center space-x-2 text-sm text-gray-500">
-            <div className="flex space-x-1">
-              {sections.map((_, index) => (
-                <div
-                  key={index}
-                  className={`h-2 w-2 rounded-full transition-all duration-300 ${
-                    index === currentSection
-                      ? "bg-primary w-4"
-                      : index < currentSection
-                      ? "bg-primary/40"
-                      : "bg-gray-200"
-                  }`}
-                />
-              ))}
+      {energyData ? (
+        <div className="max-w-7xl mx-auto space-y-8">
+          <Card className="backdrop-blur-sm bg-white/80">
+            <CardHeader>
+              <CardTitle className="text-2xl font-bold text-center text-green-800">
+                Your Energy Analytics
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <EnergyAnalytics data={energyData} />
+            </CardContent>
+          </Card>
+          
+          <Button
+            onClick={() => setCurrentSection(0)}
+            className="w-full max-w-md mx-auto block"
+          >
+            Update Energy Information
+          </Button>
+        </div>
+      ) : (
+        <Card className="max-w-2xl mx-auto backdrop-blur-sm bg-white/80 border-green-100 shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold text-center text-green-800">
+              {sections[currentSection].title}
+            </CardTitle>
+            <div className="flex justify-center space-x-2 text-sm text-gray-500">
+              <div className="flex space-x-1">
+                {sections.map((_, index) => (
+                  <div
+                    key={index}
+                    className={`h-2 w-2 rounded-full transition-all duration-300 ${
+                      index === currentSection
+                        ? "bg-primary w-4"
+                        : index < currentSection
+                        ? "bg-primary/40"
+                        : "bg-gray-200"
+                    }`}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {sections[currentSection].fields}
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {sections[currentSection].fields}
 
-            <div className="flex justify-between pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={previousSection}
-                disabled={currentSection === 0}
-                className="hover:bg-primary/5 transition-colors"
-              >
-                Previous
-              </Button>
-              {currentSection === sections.length - 1 ? (
+              <div className="flex justify-between pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => currentSection > 0 && setCurrentSection(currentSection - 1)}
+                  disabled={currentSection === 0}
+                  className="hover:bg-primary/5 transition-colors"
+                >
+                  Previous
+                </Button>
                 <Button
                   type="submit"
                   className="bg-primary hover:bg-primary/90 transition-colors"
                 >
-                  Submit
+                  {currentSection === sections.length - 1 ? "Submit" : "Next"}
                 </Button>
-              ) : (
-                <Button
-                  type="button"
-                  onClick={nextSection}
-                  className="bg-primary hover:bg-primary/90 transition-colors"
-                >
-                  Next
-                </Button>
-              )}
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };

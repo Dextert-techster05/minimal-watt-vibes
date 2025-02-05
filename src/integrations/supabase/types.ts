@@ -9,6 +9,48 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      energy_consumption: {
+        Row: {
+          appliances: Json[] | null
+          building_size: number | null
+          created_at: string
+          energy_provider: string | null
+          energy_sources: string[] | null
+          high_consumption_season: string | null
+          id: string
+          monthly_bill: number | null
+          occupants: number | null
+          peak_usage_time: string | null
+          user_id: string
+        }
+        Insert: {
+          appliances?: Json[] | null
+          building_size?: number | null
+          created_at?: string
+          energy_provider?: string | null
+          energy_sources?: string[] | null
+          high_consumption_season?: string | null
+          id?: string
+          monthly_bill?: number | null
+          occupants?: number | null
+          peak_usage_time?: string | null
+          user_id: string
+        }
+        Update: {
+          appliances?: Json[] | null
+          building_size?: number | null
+          created_at?: string
+          energy_provider?: string | null
+          energy_sources?: string[] | null
+          high_consumption_season?: string | null
+          id?: string
+          monthly_bill?: number | null
+          occupants?: number | null
+          peak_usage_time?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
