@@ -41,21 +41,16 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <section className="relative min-h-[90vh] overflow-hidden">
-        {/* Background with natural gradient */}
         <div className="absolute inset-0 bg-gradient-to-br from-emerald-100 via-teal-100 to-cyan-100 opacity-90" />
         
-        {/* Hero Content Container */}
         <div className="relative max-w-7xl mx-auto px-4 py-20">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            {/* Left Content */}
             <div className="space-y-8 bg-white/10 backdrop-blur-sm p-8 rounded-2xl">
-              {/* Logo and Navigation */}
               <div className="flex items-center gap-2 mb-16">
                 <Leaf className="h-8 w-8 text-emerald-700" />
                 <span className="text-emerald-800 font-semibold text-xl">EnergyTrack</span>
               </div>
               
-              {/* Hero Text */}
               <h1 className="text-6xl font-bold leading-tight text-emerald-900">
                 Smart Energy,
                 <br />
@@ -88,11 +83,10 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Right Content - Hero Image */}
             <div className="relative h-[500px] flex items-center justify-center">
               <img 
-                src="/lovable-uploads/1bd4b9a6-9b71-4a40-ac16-5bd932e6dbae.png"
-                alt="Energy concept illustration"
+                src="/lovable-uploads/9a917566-7a24-42ff-8be7-c567d14d7db5.png"
+                alt="Green Earth with growing plants"
                 className="w-full h-full object-contain animate-float"
               />
             </div>
@@ -112,7 +106,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Features Section */}
       <section className="py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12 text-[#3d8168]">Why Choose Us?</h2>
@@ -142,7 +135,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
       <section className="py-20 px-4 bg-gradient-to-b from-white to-[#a8e6cf]/20">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-12 text-[#3d8168]">What Our Users Say</h2>
@@ -154,7 +146,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="py-20 px-4 bg-[#3d8168]">
         <div className="max-w-7xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-6 text-white">Ready to Make a Difference?</h2>
