@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -38,13 +39,19 @@ const EnergyForm = () => {
     monthlyBill: "",
   });
 
-  // Fetch existing energy data with enabled option
-  const { data: energyData, refetch, isLoading: isLoadingData } = useQuery({
+  // Fetch existing energy data
+  const { data: energyData, isLoading: isLoadingData } = useQuery({
     queryKey: ['energyData'],
     queryFn: async () => {
+      const { data: session } = await supabase.auth.getSession();
+      if (!session.session?.user.id) {
+        throw new Error("No authenticated user found");
+      }
+
       const { data, error } = await supabase
         .from('energy_consumption')
         .select('*')
+        .eq('user_id', session.session.user.id)
         .maybeSingle();
       
       if (error) throw error;
@@ -194,10 +201,8 @@ const EnergyForm = () => {
           description: "Your energy consumption data has been saved.",
         });
 
-        // Invalidate and refetch the query to get fresh data
+        // Invalidate the query to force a refresh
         await queryClient.invalidateQueries({ queryKey: ['energyData'] });
-        await refetch();
-        
         setShowForm(false);
       } catch (error: any) {
         console.error("Error saving energy data:", error);
