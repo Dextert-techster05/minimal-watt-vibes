@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -57,7 +56,6 @@ const EnergyForm = () => {
       if (error) throw error;
       return data;
     },
-    enabled: !showForm, // Only fetch when showing analytics
   });
 
   const validateCurrentSection = () => {
@@ -201,7 +199,7 @@ const EnergyForm = () => {
           description: "Your energy consumption data has been saved.",
         });
 
-        // Invalidate the query to force a refresh
+        // Reset form and refetch data
         await queryClient.invalidateQueries({ queryKey: ['energyData'] });
         setShowForm(false);
       } catch (error: any) {
@@ -481,7 +479,7 @@ const EnergyForm = () => {
             <Card className="backdrop-blur-sm bg-white/80">
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <Loader2 className="h-12 w-12 animate-spin text-primary mb-4" />
-                <p className="text-lg font-medium text-gray-600">Generating your energy analytics report...</p>
+                <p className="text-lg font-medium text-gray-600">Loading your energy analytics report...</p>
               </CardContent>
             </Card>
           ) : (
